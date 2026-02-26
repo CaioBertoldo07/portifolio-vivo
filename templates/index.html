@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título da página -->
+    <title>{{ user.name }} - Portfólio Vivo V2.0</title>
+
+    <!-- Link para o CSS -->
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ========================================
+             BOTÃO DE TEMA (Modo Claro/Escuro)
+             ======================================== -->
+    <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+        <i class="fas fa-moon"></i>
+        <span>Escuro</span>
+    </button>
+    
+    <!-- ========================================
+             BOTÃO DE PERSONALIZAÇÃO (NOVO V4.0)
+             ======================================== -->
+    <button id="customize-btn" class="customize-btn" onclick="toggleCustomizePanel()" aria-label="Personalizar">
+        <i class="fas fa-palette"></i>
+        <span>Personalizar</span>
+    </button>
+    
+    <!-- ========================================
+             PAINEL DE PERSONALIZAÇÃO (NOVO V4.0)
+             ======================================== -->
+    <div id="customize-panel" class="customize-panel">
+        <div class="customize-content">
+    
+            <!-- Cabeçalho do painel -->
+            <div class="customize-header">
+                <h2>
+                    <i class="fas fa-palette"></i> Personalize seu Portfólio
+                </h2>
+                <button class="close-panel" onclick="toggleCustomizePanel()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+    
+            <!-- Abas de navegação -->
+            <div class="customize-tabs">
+                <button class="tab-btn active" data-tab="colors">
+                    <i class="fas fa-swatchbook"></i> Cores
+                </button>
+                <button class="tab-btn" data-tab="bio">
+                    <i class="fas fa-user-edit"></i> Bio
+                </button>
+                <button class="tab-btn" data-tab="projects">
+                    <i class="fas fa-folder"></i> Projetos
+                </button>
+                <button class="tab-btn" data-tab="sections">
+                    <i class="fas fa-eye"></i> Seções
+                </button>
+            </div>
+    
+            <!-- Conteúdo das abas -->
+            <div class="customize-body">
+    
+                <!-- ABA 1: Cores -->
+                <div class="tab-content active" data-tab="colors">
+                    <h3>Escolha as Cores do Tema</h3>
+    
+                    <div class="color-picker-group">
+                        <label for="color-primary">
+                            <i class="fas fa-circle" style="color: var(--accent);"></i>
+                            Cor Principal
+                        </label>
+                        <input type="color" id="color-primary" value="#38BDF8">
+                        <input type="text" id="color-primary-hex" value="#38BDF8" readonly>
+                    </div>
+    
+                    <div class="color-picker-group">
+                        <label for="color-secondary">
+                            <i class="fas fa-circle" style="color: #818CF8;"></i>
+                            Cor Secundária
+                        </label>
+                        <input type="color" id="color-secondary" value="#818CF8">
+                        <input type="text" id="color-secondary-hex" value="#818CF8" readonly>
+                    </div>
+    
+                    <div class="color-picker-group">
+                        <label for="color-accent">
+                            <i class="fas fa-circle" style="color: #0EA5E9;"></i>
+                            Cor de Destaque
+                        </label>
+                        <input type="color" id="color-accent" value="#0EA5E9">
+                        <input type="text" id="color-accent-hex" value="#0EA5E9" readonly>
+                    </div>
+    
+                    <div class="preset-colors">
+                        <h4>Ou escolha um preset:</h4>
+                        <div class="preset-grid">
+                            <button class="preset-btn" data-preset="blue">
+                                <span style="background: #38BDF8;"></span>
+                                <span style="background: #818CF8;"></span>
+                                <span style="background: #0EA5E9;"></span>
+                                Azul
+                            </button>
+                            <button class="preset-btn" data-preset="purple">
+                                <span style="background: #A78BFA;"></span>
+                                <span style="background: #C084FC;"></span>
+                                <span style="background: #9333EA;"></span>
+                                Roxo
+                            </button>
+                            <button class="preset-btn" data-preset="green">
+                                <span style="background: #34D399;"></span>
+                                <span style="background: #10B981;"></span>
+                                <span style="background: #059669;"></span>
+                                Verde
+                            </button>
+                            <button class="preset-btn" data-preset="orange">
+                                <span style="background: #FB923C;"></span>
+                                <span style="background: #F97316;"></span>
+                                <span style="background: #EA580C;"></span>
+                                Laranja
+                            </button>
+                            <button class="preset-btn" data-preset="pink">
+                                <span style="background: #F472B6;"></span>
+                                <span style="background: #EC4899;"></span>
+                                <span style="background: #DB2777;"></span>
+                                Rosa
+                            </button>
+                            <button class="preset-btn" data-preset="red">
+                                <span style="background: #EF4444;"></span>
+                                <span style="background: #DC2626;"></span>
+                                <span style="background: #B91C1C;"></span>
+                                Vermelho
+                            </button>
+                        </div>
+                    </div>
+    
+                    <button class="btn-reset" onclick="resetColors()">
+                        <i class="fas fa-undo"></i> Resetar Cores Padrão
+                    </button>
+                </div>
+    
+                <!-- ABA 2: Bio -->
+                <div class="tab-content" data-tab="bio">
+                    <h3>Edite sua Bio</h3>
+                    <p class="tab-description">Personalize o texto "Sobre Mim" do seu portfólio</p>
+    
+                    <div class="bio-editor">
+                        <label for="custom-bio">Texto da Bio:</label>
+                        <textarea id="custom-bio" rows="6"
+                            placeholder="Digite sua bio personalizada aqui...">Sou estudante de Engenharia da Computação, apaixonado por Python, automação e sistemas inteligentes. Atualmente focado em desenvolvimento web e projetos de IoT.</textarea>
+    
+                        <label for="custom-interests">Áreas de Interesse:</label>
+                        <input type="text" id="custom-interests" placeholder="Ex: Python, Web, IoT, ML"
+                            value="Desenvolvimento Web, Python, Automação, IoT, Machine Learning">
+    
+                        <label for="custom-goal">Objetivo Atual:</label>
+                        <input type="text" id="custom-goal" placeholder="Seu objetivo como desenvolvedor"
+                            value="Construir projetos que resolvam problemas reais e contribuir para a comunidade open source.">
+                    </div>
+    
+                    <div class="bio-preview">
+                        <h4>Preview:</h4>
+                        <div id="bio-preview-text" class="preview-box">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- ABA 3: Projetos -->
+                <div class="tab-content" data-tab="projects">
+                    <h3>Selecione Projetos em Destaque</h3>
+                    <p class="tab-description">Escolha quais projetos aparecerão na seção "Favoritos"</p>
+    
+                    <div class="projects-selector">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="project-search" placeholder="Buscar projeto...">
+                        </div>
+    
+                        <div class="selected-count">
+                            <span id="selected-count">0</span> de 3 projetos selecionados
+                        </div>
+    
+                        <div id="projects-list" class="projects-list">
+                            {% if all_repos %}
+                            {% for repo in all_repos %}
+                            <label class="project-item">
+                                <input type="checkbox" class="project-checkbox" value="{{ repo.name }}"
+                                    data-repo="{{ repo.name }}">
+                                <div class="project-info">
+                                    <div class="project-header">
+                                        <strong>{{ repo.name }}</strong>
+                                        <span class="project-lang">{{ repo.language }}</span>
+                                    </div>
+                                    <p class="project-desc">{{ repo.description }}</p>
+                                    <div class="project-stats">
+                                        <span><i class="fas fa-star"></i> {{ repo.stars }}</span>
+                                    </div>
+                                </div>
+                            </label>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- ABA 4: Seções -->
+                <div class="tab-content" data-tab="sections">
+                    <h3>Mostrar/Ocultar Seções</h3>
+                    <p class="tab-description">Escolha quais seções aparecem no seu portfólio</p>
+    
+                    <div class="sections-toggle">
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fab fa-github"></i>
+                                <span>Perfil GitHub</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-perfil" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+    
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Estatísticas</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-estatisticas" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+    
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fas fa-fire"></i>
+                                <span>Mapa de Calor</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-heatmap" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+    
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Comparação</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-comparacao" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+    
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fas fa-heart"></i>
+                                <span>Projetos Favoritos</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-favoritos" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+    
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fas fa-code"></i>
+                                <span>Todos os Projetos</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-projetos" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+    
+                        <label class="toggle-item">
+                            <div class="toggle-info">
+                                <i class="fas fa-user"></i>
+                                <span>Sobre Mim</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-sobre" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+    
+            </div>
+    
+            <!-- Rodapé do painel -->
+            <div class="customize-footer">
+                <button class="btn-save" onclick="saveCustomization()">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+                <button class="btn-cancel" onclick="toggleCustomizePanel()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button class="btn-reset-all" onclick="resetAllCustomization()">
+                    <i class="fas fa-trash"></i> Resetar Tudo
+                </button>
+            </div>
+    
+        </div>
+    </div>
+    
+    <!-- Overlay do painel -->
+    <div id="customize-overlay" class="customize-overlay" onclick="toggleCustomizePanel()"></div>
+
+    <!-- ========================================
+         HEADER - Apresentação Principal
+         ======================================== -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Avatar do GitHub -->
+                <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar">
+
+                <div class="header-text">
+                    <!-- Nome do desenvolvedor -->
+                    <h1 class="header-title">{{ user.name or user.login }}</h1>
+
+                    <!-- Título/Bio -->
+                    <p class="header-subtitle">{{ user.bio or "Desenvolvedor em construção | Python | Web | IoT" }}</p>
+
+                    <!-- Botão para GitHub -->
+                    <a href="{{ user.html_url }}" target="_blank" class="btn-github">
+                        <i class="fab fa-github"></i> Ver no GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================
+         CONTEÚDO PRINCIPAL
+         ======================================== -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- ========================================
+                 SEÇÃO: Perfil GitHub
+                 ======================================== -->
+            <section class="section" id="perfil">
+                <h2 class="section-title">
+                    <i class="fab fa-github"></i> Perfil GitHub
+                </h2>
+
+                <div class="profile-grid">
+                    <!-- Card: Repositórios -->
+                    <div class="stat-card">
+                        <i class="fas fa-code-branch icon"></i>
+                        <div class="stat-content">
+                            <h3 class="stat-value">{{ user.public_repos }}</h3>
+                            <p class="stat-label">Repositórios</p>
+                        </div>
+                    </div>
+
+                    <!-- Card: Seguidores -->
+                    <div class="stat-card">
+                        <i class="fas fa-users icon"></i>
+                        <div class="stat-content">
+                            <h3 class="stat-value">{{ user.followers }}</h3>
+                            <p class="stat-label">Seguidores</p>
+                        </div>
+                    </div>
+
+                    <!-- Card: Localização -->
+                    <div class="stat-card">
+                        <i class="fas fa-map-marker-alt icon"></i>
+                        <div class="stat-content">
+                            <h3 class="stat-value">{{ user.location or "Brasil" }}</h3>
+                            <p class="stat-label">Localização</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SEÇÃO: Estatísticas Dinâmicas
+                 ======================================== -->
+            <section class="section" id="estatisticas">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-bar"></i> Estatísticas
+                </h2>
+
+                <div class="charts-grid">
+                    <!-- Gráfico 1: Linguagens -->
+                    <div class="chart-card">
+                        <h3 class="chart-title">Linguagens Mais Usadas</h3>
+                        <canvas id="languagesChart"></canvas>
+                    </div>
+
+                    <!-- Gráfico 2: Commits -->
+                    <div class="chart-card">
+                        <h3 class="chart-title">Atividade Recente</h3>
+                        <canvas id="commitsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================
+                             SEÇÃO: Mapa de Calor de Commits (NOVO V3.0)
+                             ======================================== -->
+            <section class="section" id="heatmap">
+                <h2 class="section-title">
+                    <i class="fas fa-fire"></i> Mapa de Calor de Commits
+                </h2>
+            
+                <div class="heatmap-card">
+                    <div class="heatmap-header">
+                        <p class="heatmap-subtitle">Atividade nos últimos 12 meses</p>
+                        <div class="heatmap-legend">
+                            <span>Menos</span>
+                            <div class="legend-colors">
+                                <span class="legend-box level-0"></span>
+                                <span class="legend-box level-1"></span>
+                                <span class="legend-box level-2"></span>
+                                <span class="legend-box level-3"></span>
+                                <span class="legend-box level-4"></span>
+                            </div>
+                            <span>Mais</span>
+                        </div>
+                    </div>
+                    <div id="commitHeatmap" class="heatmap-container">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ========================================
+                             SEÇÃO: Comparação com Outros Devs (NOVO V3.0)
+                             ======================================== -->
+            <section class="section" id="comparacao">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i> Comparação com Desenvolvedores
+                </h2>
+            
+                <div class="comparison-grid">
+                    {% if comparison %}
+                    <!-- Card: Repositórios -->
+                    <div class="comparison-card">
+                        <div class="comparison-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <h3 class="comparison-title">Repositórios</h3>
+                        <div class="comparison-values">
+                            <div class="value-item">
+                                <span class="value-label">Você</span>
+                                <span class="value-number">{{ comparison.repos.user }}</span>
+                            </div>
+                            <div class="value-item">
+                                <span class="value-label">Média</span>
+                                <span class="value-number">{{ comparison.repos.average }}</span>
+                            </div>
+                        </div>
+                        <div class="comparison-badge {{ comparison.repos.status }}">
+                            {% if comparison.repos.diff_percent > 0 %}
+                            <i class="fas fa-arrow-up"></i> {{ comparison.repos.diff_percent }}% acima da média
+                            {% elif comparison.repos.diff_percent < 0 %} <i class="fas fa-arrow-down"></i> {{
+                                comparison.repos.diff_percent|abs }}% abaixo da média
+                                {% else %}
+                                <i class="fas fa-equals"></i> Na média
+                                {% endif %}
+                        </div>
+                    </div>
+            
+                    <!-- Card: Seguidores -->
+                    <div class="comparison-card">
+                        <div class="comparison-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="comparison-title">Seguidores</h3>
+                        <div class="comparison-values">
+                            <div class="value-item">
+                                <span class="value-label">Você</span>
+                                <span class="value-number">{{ comparison.followers.user }}</span>
+                            </div>
+                            <div class="value-item">
+                                <span class="value-label">Média</span>
+                                <span class="value-number">{{ comparison.followers.average }}</span>
+                            </div>
+                        </div>
+                        <div class="comparison-badge {{ comparison.followers.status }}">
+                            {% if comparison.followers.diff_percent > 0 %}
+                            <i class="fas fa-arrow-up"></i> {{ comparison.followers.diff_percent }}% acima da média
+                            {% elif comparison.followers.diff_percent < 0 %} <i class="fas fa-arrow-down"></i> {{
+                                comparison.followers.diff_percent|abs }}% abaixo da média
+                                {% else %}
+                                <i class="fas fa-equals"></i> Na média
+                                {% endif %}
+                        </div>
+                    </div>
+            
+                    <!-- Card: Stars Totais -->
+                    <div class="comparison-card">
+                        <div class="comparison-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="comparison-title">Stars Totais</h3>
+                        <div class="comparison-values">
+                            <div class="value-item">
+                                <span class="value-label">Você</span>
+                                <span class="value-number">{{ comparison.stars_total.user }}</span>
+                            </div>
+                            <div class="value-item">
+                                <span class="value-label">Média</span>
+                                <span class="value-number">{{ comparison.stars_total.average }}</span>
+                            </div>
+                        </div>
+                        <div class="comparison-badge {{ comparison.stars_total.status }}">
+                            {% if comparison.stars_total.diff_percent > 0 %}
+                            <i class="fas fa-arrow-up"></i> {{ comparison.stars_total.diff_percent }}% acima da média
+                            {% elif comparison.stars_total.diff_percent < 0 %} <i class="fas fa-arrow-down"></i> {{
+                                comparison.stars_total.diff_percent|abs }}% abaixo da média
+                                {% else %}
+                                <i class="fas fa-equals"></i> Na média
+                                {% endif %}
+                        </div>
+                    </div>
+            
+                    <!-- Card: Linguagens -->
+                    <div class="comparison-card">
+                        <div class="comparison-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="comparison-title">Linguagens</h3>
+                        <div class="comparison-values">
+                            <div class="value-item">
+                                <span class="value-label">Você</span>
+                                <span class="value-number">{{ comparison.languages_count.user }}</span>
+                            </div>
+                            <div class="value-item">
+                                <span class="value-label">Média</span>
+                                <span class="value-number">{{ comparison.languages_count.average }}</span>
+                            </div>
+                        </div>
+                        <div class="comparison-badge {{ comparison.languages_count.status }}">
+                            {% if comparison.languages_count.diff_percent > 0 %}
+                            <i class="fas fa-arrow-up"></i> {{ comparison.languages_count.diff_percent }}% acima da média
+                            {% elif comparison.languages_count.diff_percent < 0 %} <i class="fas fa-arrow-down"></i> {{
+                                comparison.languages_count.diff_percent|abs }}% abaixo da média
+                                {% else %}
+                                <i class="fas fa-equals"></i> Na média
+                                {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+            
+            <!-- ========================================
+            SEÇÃO: Download PDF (NOVO V3.0)
+            ======================================== -->
+            <section class="section" id="download">
+                <div class="download-card">
+                    <div class="download-content">
+                        <i class="fas fa-file-pdf download-icon"></i>
+                        <div class="download-text">
+                            <h3 class="download-title">Baixar Portfólio em PDF</h3>
+                            <p class="download-subtitle">
+                                Gere uma versão em PDF do seu portfólio com todas as informações atualizadas
+                            </p>
+                        </div>
+                    </div>
+                    <a href="/download-pdf" class="btn-download" download>
+                        <i class="fas fa-download"></i> Baixar PDF
+                    </a>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SEÇÃO: Projetos Favoritos (NOVO!)
+                 ======================================== -->
+            <section class="section favorites-section" id="favoritos">
+                <span class="favorites-badge">
+                    <i class="fas fa-star"></i> Destaques Especiais
+                </span>
+
+                <h2 class="section-title">
+                    <i class="fas fa-heart"></i> Projetos Favoritos
+                </h2>
+
+                <div class="projects-grid">
+                    {% if projects %}
+                    <!-- Mostra os 3 primeiros projetos como favoritos -->
+                    {% for project in projects[:3] %}
+                    <div class="project-card">
+                        <h3 class="project-name">
+                            <i class="fas fa-folder"></i> {{ project.name }}
+                        </h3>
+
+                        <p class="project-description">{{ project.description }}</p>
+
+                        <div class="project-meta">
+                            <span class="project-language">
+                                <i class="fas fa-circle"></i> {{ project.language }}
+                            </span>
+                            <span class="project-stars">
+                                <i class="fas fa-star"></i> {{ project.stars }}
+                            </span>
+                        </div>
+
+                        <p class="project-date">Atualizado em: {{ project.updated_at }}</p>
+
+                        <a href="{{ project.html_url }}" target="_blank" class="btn-project">
+                            Ver no GitHub <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="no-projects">Nenhum projeto favorito selecionado ainda.</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SEÇÃO: Todos os Projetos
+                 ======================================== -->
+            <section class="section" id="projetos">
+                <h2 class="section-title">
+                    <i class="fas fa-code"></i> Todos os Projetos
+                </h2>
+
+                <div class="projects-grid">
+                    {% if projects %}
+                    <!-- Loop por todos os projetos -->
+                    {% for project in projects %}
+                    <div class="project-card">
+                        <h3 class="project-name">
+                            <i class="fas fa-folder"></i> {{ project.name }}
+                        </h3>
+
+                        <p class="project-description">{{ project.description }}</p>
+
+                        <div class="project-meta">
+                            <span class="project-language">
+                                <i class="fas fa-circle"></i> {{ project.language }}
+                            </span>
+                            <span class="project-stars">
+                                <i class="fas fa-star"></i> {{ project.stars }}
+                            </span>
+                        </div>
+
+                        <p class="project-date">Atualizado em: {{ project.updated_at }}</p>
+
+                        <a href="{{ project.html_url }}" target="_blank" class="btn-project">
+                            Ver no GitHub <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="no-projects">Nenhum projeto encontrado. Comece a codar!</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SEÇÃO: Sobre Mim
+                 ======================================== -->
+            <section class="section" id="sobre">
+                <h2 class="section-title">
+                    <i class="fas fa-user"></i> Sobre Mim
+                </h2>
+
+                <div class="about-card">
+                    <p class="about-text">
+                        Sou estudante de Engenharia da Computação, apaixonado por Python,
+                        automação e sistemas inteligentes. Atualmente focado em desenvolvimento
+                        web e projetos de IoT. Este portfólio é atualizado automaticamente com
+                        base na minha atividade no GitHub, refletindo minha evolução como
+                        desenvolvedor em tempo real.
+                    </p>
+
+                    <p class="about-text">
+                        <strong>Áreas de interesse:</strong>
+                        Desenvolvimento Web, Python, Automação, IoT, Machine Learning
+                    </p>
+
+                    <p class="about-text">
+                        <strong>🎯 Objetivo atual:</strong>
+                        Construir projetos que resolvam problemas reais e contribuir para
+                        a comunidade open source.
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 {{ user.name or user.login }} - Portfólio Vivo V2.0</p>
+            <p class="footer-subtitle">
+                <i class="fas fa-sync-alt"></i> Atualizado automaticamente via GitHub API
+            </p>
+            <p class="footer-subtitle" style="margin-top: 0.5rem;">
+                <i class="fas fa-code"></i> Feito com Python + Flask + Chart.js
+            </p>
+        </div>
+    </footer>
+
+    <!-- ========================================
+         JAVASCRIPT
+         ======================================== -->
+
+    <!-- Passa dados do Python para JavaScript -->
+    <script>
+        // Dados de linguagens vindos do backend
+        const languagesData = {{ languages | tojson | safe }};
+
+        // Dados de commits vindos do backend
+        const commitsData = {{ commits | tojson | safe }};
+
+        // Dados do heatmap
+        const heatmapData = {{ heatmap | tojson | safe }};
+
+        // V4.0: Lista completa de repositórios
+        const allRepos = {{ all_repos | tojson | safe }};
+
+        // V4.0: Configuração padrão
+        const defaultConfig = {{ default_config | tojson | safe }};
+
+        // Debug
+        console.log('Dados carregados:', {
+            languagesData,
+            commitsData,
+            heatmapData,
+            allRepos,
+            defaultConfig
+        });
+    </script>
+
+    <!-- Script principal -->
+    <script src="/static/script.js"></script>
+
+</body>
+
+</html>
